@@ -20,7 +20,7 @@ public protocol DragControllerDelegate: UITableViewDataSource, UITableViewDelega
 
 extension DragControllerDelegate {
     public func handleStateChange(scrollView: UIScrollView) {
-        if scrollView.contentOffset.y < -(scrollView.frame.height * 0.12) {
+        if scrollView.contentOffset.y < -(scrollView.frame.height * 0.11) {
             if controller?.currentPosition == 0 { return }
             controller?.currentPosition -= 1
         }

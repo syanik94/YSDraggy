@@ -25,8 +25,10 @@ public class DragView: UIView {
         return view
     }()
     
+    public var tableViewStyle: UITableView.Style = .insetGrouped
+    
     public lazy var tableView: UITableView = {
-        let view = UITableView(frame: .zero, style: .grouped)
+        let view = UITableView(frame: .zero, style: tableViewStyle)
         view.dataSource = controller.currentState.dataSource
         view.delegate = controller.currentState.dataSource
         view.isScrollEnabled = false

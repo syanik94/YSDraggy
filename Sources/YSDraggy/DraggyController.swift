@@ -13,12 +13,12 @@ public protocol DragControllerStateManager: class {
 }
 
 /// Used to configure the DragView contents. Inherits from UITableViewDataSource & UITableViewDelegate.
-public protocol DragControllerDelegate: UITableViewDataSource, UITableViewDelegate {
+public protocol DragControllerDataSource: UITableViewDataSource, UITableViewDelegate {
     var controller: DragControllerStateManager? { get set }
     func scrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
-extension DragControllerDelegate {
+extension DragControllerDataSource {
     public func handleStateChange(scrollView: UIScrollView) {
         if scrollView.contentOffset.y < -(scrollView.frame.height * 0.11) {
             if controller?.currentPosition == 0 { return }
@@ -29,10 +29,10 @@ extension DragControllerDelegate {
 
 /// The possible heights with datasources for the dragView.
 public struct DragControllerState {
-    var dataSource: DragControllerDelegate?
+    var dataSource: DragControllerDataSource?
     let height: CGFloat
     
-    public init(dataSource: DragControllerDelegate?, height: CGFloat) {
+    public init(dataSource: DragControllerDataSource?, height: CGFloat) {
         self.dataSource = dataSource
         self.height = height
     }

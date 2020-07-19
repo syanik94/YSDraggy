@@ -1,7 +1,7 @@
 import XCTest
 
-import DraggyViewTests
+import YSDraggyTests
 
 var tests = [XCTestCaseEntry]()
-tests += DraggyViewTests.allTests()
+tests += YSDraggyTests.allTests()
 XCTMain(tests)

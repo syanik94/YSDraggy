@@ -15,7 +15,7 @@ public class DragView: UIView {
     
     // MARK: View
     
-    let dragIndicator: UIView = {
+    public let dragIndicator: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 3
         view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
@@ -25,7 +25,7 @@ public class DragView: UIView {
         return view
     }()
     
-    lazy var tableView: UITableView = {
+    public lazy var tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .grouped)
         view.dataSource = controller.currentState.dataSource
         view.delegate = controller.currentState.dataSource

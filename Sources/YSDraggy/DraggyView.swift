@@ -70,9 +70,9 @@ public class DragView: UIView {
             
             self.tableView.isScrollEnabled = shouldScroll
             self.tableView.dataSource = newState.dataSource
-            self.tableView.alpha = 0
+            self.tableView.alpha = 0.4
             
-            UIView.animate(withDuration: 0.35) {
+            UIView.animate(withDuration: 0.3) {
                 self.tableView.reloadData()
                 self.tableView.alpha = 1
             }

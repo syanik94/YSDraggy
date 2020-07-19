@@ -92,7 +92,6 @@ public class DragView: UIView {
     
     func setupView() {
         layer.cornerRadius = 16
-        backgroundColor = .white
         
         addGestureRecognizer(defaultPanGesture)
         

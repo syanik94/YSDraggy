@@ -25,8 +25,9 @@ public class DragView: UIView {
         return view
     }()
     
-    public var tableViewStyle: UITableView.Style = .insetGrouped
-    
+    public var tableViewStyle: UITableView.Style = .plain
+    public var tableViewPadding: UIEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 0)
+
     public lazy var tableView: UITableView = {
         let view = UITableView(frame: .zero, style: tableViewStyle)
         view.dataSource = controller.currentState.dataSource
@@ -101,10 +102,10 @@ public class DragView: UIView {
         
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        tableView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        tableView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        tableView.topAnchor.constraint(equalTo: dragIndicator.bottomAnchor).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: tableViewPadding.bottom).isActive = true
+        tableView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor, constant: tableViewPadding.left).isActive = true
+        tableView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor, constant: tableViewPadding.right).isActive = true
+        tableView.topAnchor.constraint(equalTo: dragIndicator.bottomAnchor, constant: tableViewPadding.top).isActive = true
     }
     
     // MARK: Methods

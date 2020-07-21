@@ -25,8 +25,8 @@ public class DragView: UIView {
         return view
     }()
     
-    public var tableViewStyle: UITableView.Style = .plain
-    public var tableViewPadding: UIEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 0)
+    public var tableViewStyle = UITableView.Style.plain
+    public var tableViewPadding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
     public lazy var tableView: UITableView = {
         let view = UITableView(frame: .zero, style: tableViewStyle)
@@ -92,8 +92,6 @@ public class DragView: UIView {
     // MARK: View Setup
     
     func setupView() {
-        layer.cornerRadius = 16
-        
         addGestureRecognizer(defaultPanGesture)
         
         addSubview(dragIndicator)

@@ -13,6 +13,10 @@ public class DragView: UIView {
     
     weak var delegate: (DragViewDelegate & UITableViewDelegate)?
     
+    public var currentStateIndex: Int {
+        return controller.currentPosition
+    }
+    
     // MARK: View
     
     public let dragIndicator: UIView = {
@@ -33,6 +37,7 @@ public class DragView: UIView {
         view.dataSource = controller.currentState.dataSource
         view.delegate = controller.currentState.dataSource
         view.isScrollEnabled = false
+        view.bounces = false
         return view
     }()
     
@@ -40,6 +45,9 @@ public class DragView: UIView {
     
     private lazy var defaultPanGesture: UIPanGestureRecognizer = {
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleDefaultPan))
+        gesture.maximumNumberOfTouches = 1
+        gesture.minimumNumberOfTouches = 1
+//        gesture.delegate = self
         return gesture
     }()
     
@@ -74,15 +82,15 @@ public class DragView: UIView {
             self.tableView.isScrollEnabled = shouldScroll
             self.tableView.dataSource = newState.dataSource
             self.tableView.delegate = newState.dataSource
-            self.tableView.alpha = 0.4
             
-            UIView.animate(withDuration: 0.3) {
-                self.tableView.reloadData()
-                self.tableView.alpha = 1
-            }
+//            self.tableView.alpha = 0.4
+//            UIView.animate(withDuration: 0.3) {
+//                self.tableView.reloadData()
+//                self.tableView.alpha = 1
+//            }
             
             let heightForState: CGFloat = newState.height
-            UIView.animate(withDuration: 0.15, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: .curveLinear, animations: {
+            UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: .curveEaseIn, animations: {
                 self.constraints.first { $0.firstAnchor == self.heightAnchor }?.isActive = false
                 self.heightAnchor.constraint(equalToConstant: heightForState).isActive = true
             })
@@ -113,6 +121,8 @@ public class DragView: UIView {
     
     @objc private func handleDefaultPan(gesture: UIPanGestureRecognizer) {
         guard gesture.translation(in: self).y != 0 else { return }
+        
+        gesture.require(toFail: tableView.panGestureRecognizer)
         
         let swipeVelocity = -gesture.velocity(in: self).y
                 
@@ -148,6 +158,15 @@ public class DragView: UIView {
         UIView.animate(withDuration: 0) {
             self.heightAnchor.constraint(equalToConstant: newHeight).isActive = true
         }
+    }
+}
+
+extension DragView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 

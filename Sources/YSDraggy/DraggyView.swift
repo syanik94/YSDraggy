@@ -17,38 +17,17 @@ public class DragView: UIView {
         return controller.currentPosition
     }
     
-    // MARK: View
-    
-    public let dragIndicator: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 3
-        view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 6).isActive = true
-        view.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        return view
-    }()
-    
     public var tableViewStyle = UITableView.Style.plain
     public var tableViewPadding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-
-    public lazy var tableView: UITableView = {
-        let view = UITableView(frame: .zero, style: tableViewStyle)
-        view.dataSource = controller.currentState.dataSource
-        view.delegate = controller.currentState.dataSource
-        view.isScrollEnabled = false
-        view.bounces = false
-        return view
-    }()
+    
+    // MARK: View
+    
+    public lazy var tableView: UITableView = makeTableView()
+    public lazy var dragIndicator: UIView = makeDragIndicator()
     
     // MARK: Gestures
     
-    private lazy var defaultPanGesture: UIPanGestureRecognizer = {
-        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleDefaultPan))
-        gesture.maximumNumberOfTouches = 1
-        gesture.minimumNumberOfTouches = 1
-        return gesture
-    }()
+    private lazy var panGesture: UIPanGestureRecognizer = makePanGesture()
     
     // MARK: Initializer
     
@@ -63,21 +42,23 @@ public class DragView: UIView {
         commonInit()
     }
     
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        roundTopCorners(radius: 16)
-        setupView()
-    }
-    
     private func commonInit() {
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor.constraint(equalToConstant: controller.configuration.first!.height).isActive = true
         observePresentationStateChanges()
     }
     
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        roundTopCorners(radius: 16)
+        setupView()
+    }
+    
+    // MARK: - Observe Changes
+    
     private func observePresentationStateChanges() {
         controller.presentationStateChangeHandler = { [unowned self] newState, shouldScroll in
-            self.defaultPanGesture.cancel()
+            self.panGesture.cancel()
             
             self.tableView.dataSource = newState.dataSource
             self.tableView.delegate = newState.dataSource
@@ -94,7 +75,7 @@ public class DragView: UIView {
     // MARK: View Setup
     
     func setupView() {
-        addGestureRecognizer(defaultPanGesture)
+        addGestureRecognizer(panGesture)
         
         addSubview(dragIndicator)
         dragIndicator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
@@ -106,6 +87,32 @@ public class DragView: UIView {
         tableView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor, constant: tableViewPadding.left).isActive = true
         tableView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor, constant: tableViewPadding.right).isActive = true
         tableView.topAnchor.constraint(equalTo: dragIndicator.bottomAnchor, constant: tableViewPadding.top).isActive = true
+    }
+    
+    fileprivate func makeDragIndicator() -> UIView {
+        let view = UIView()
+        view.layer.cornerRadius = 3
+        view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 6).isActive = true
+        view.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        return view
+    }
+    
+    fileprivate func makeTableView() -> UITableView {
+        let view = UITableView(frame: .zero, style: tableViewStyle)
+        view.dataSource = controller.currentState.dataSource
+        view.delegate = controller.currentState.dataSource
+        view.isScrollEnabled = false
+        view.bounces = false
+        return view
+    }
+    
+    fileprivate func makePanGesture() -> UIPanGestureRecognizer {
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleDefaultPan))
+        gesture.maximumNumberOfTouches = 1
+        gesture.minimumNumberOfTouches = 1
+        return gesture
     }
     
     // MARK: Methods

@@ -47,7 +47,6 @@ public class DragView: UIView {
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleDefaultPan))
         gesture.maximumNumberOfTouches = 1
         gesture.minimumNumberOfTouches = 1
-//        gesture.delegate = self
         return gesture
     }()
     
@@ -66,6 +65,7 @@ public class DragView: UIView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
+        roundTopCorners(radius: 16)
         setupView()
     }
     
@@ -79,15 +79,9 @@ public class DragView: UIView {
         controller.presentationStateChangeHandler = { [unowned self] newState, shouldScroll in
             self.defaultPanGesture.cancel()
             
-            self.tableView.isScrollEnabled = shouldScroll
             self.tableView.dataSource = newState.dataSource
             self.tableView.delegate = newState.dataSource
-            
-//            self.tableView.alpha = 0.4
-//            UIView.animate(withDuration: 0.3) {
-//                self.tableView.reloadData()
-//                self.tableView.alpha = 1
-//            }
+
             
             let heightForState: CGFloat = newState.height
             UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 1, options: .curveEaseIn, animations: {
